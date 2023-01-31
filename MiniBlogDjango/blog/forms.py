@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 
 class RegisterForm(UserCreationForm):
 
-    # name有規定寫法 否則讀不到
     username = forms.CharField(
         label = "帳號" ,
         widget = forms.TextInput(attrs={'placeholder' : 'user'})
