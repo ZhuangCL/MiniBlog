@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Blogger: {{ blogger }}</h1>
+  <a> {{ blogger.date_of_birth }}</a>
+  <ul>
+    <br>
+    <h4><a>Articles</a></h4>
+        {% for copy in blogger.article_set.all %}
+        <hr>
+        <li><p><strong>{{ copy.title }} - </strong>{{ copy.genre }} - {{ copy.issusing_time }}</p></li>
+        {% endfor %}
+      </div>
+  </ul>
+{% endblock %}

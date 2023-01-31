@@ -1,0 +1,27 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>{{ article.title }}</h1>
+
+  <p><strong>Blogger:</strong> <a href="{% url 'blogger-detail' article.blogger.pk %}">{{ article.blogger }}</a></p> 
+  <p><strong>Genre:</strong>{% for genre in article.genre.all %} {{ genre }}{% if not forloop.last %}, {% endif %}{% endfor %}</p></p>
+  <p><strong>Issusing Time:</strong> {{ article.issusing_time }}</p>
+  <h4><strong>Content:</strong></h4> <p class="text-primary">{{ article.content }}</p>
+
+  <div style="margin-left:20px;margin-top:20px">
+    <h4>Comments</h4>
+
+    {% for comment in article.articleinstance_set.all %}
+    <ul>
+        <hr>
+        <li><strong>{{ comment.commenter }}</strong> : <a class="text-warning">{{ comment.comment }}</a> - {{ comment.post_time }}
+        {% if perms.blog.can_edit_all_SET%}
+          <a href="{% url 'comment_delete' comment.pk %}">!!delete!!</a></li>
+        {% else %}</li>{% endif %}
+    </ul>
+    {% endfor %}
+    {% if user.is_authenticated %}
+    <a href="{% url 'comment_create' article.pk %}">Reply</a>
+    {% endif %}
+  </div>
+{% endblock %}

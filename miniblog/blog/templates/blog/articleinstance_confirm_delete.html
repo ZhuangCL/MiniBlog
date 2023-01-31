@@ -1,0 +1,17 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+{% if perms.blog.can_edit_all_SET %}
+<h1>Delete Comment</h1>
+
+<p>Are you sure you want to delete the comment: {{ articleinstance.comment }}?</p>
+
+<form action="" method="POST">
+  {% csrf_token %}
+  <input type="submit" action="" value="Yes, delete." />
+</form>
+{% else %}
+<h2>You do not have permission to access</h2>
+{% endif %}
+
+{% endblock %}

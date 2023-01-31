@@ -1,0 +1,22 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>My Articles</h1>
+    {% if perms.blog.can_create_articles %}
+    {% if article_list %}
+    <ul>
+
+      {% for article in article_list %}
+      <li>
+        <a href="{% url 'article-detail' article.pk %}">{{article.title}}</a> - {{article.issusing_time}}
+      </li>
+      {% endfor %}
+    </ul>
+
+    {% else %}
+      <p>There are no article.</p>
+    {% endif %}
+    {% else %}
+    <p>You need a day to get this premission, and you can create your article.</p>
+    {% endif %}
+{% endblock %}

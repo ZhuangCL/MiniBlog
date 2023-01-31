@@ -1,0 +1,25 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    {% if perms.blog.can_edit_all_SET %}
+    <h1>Set Articles</h1>
+
+    {% if article_list %}
+    <ul>
+
+      {% for article in article_list %}
+      <li>
+        <a href="{% url 'article-detail' article.pk %}">{{article.title}}</a> - {{article.issusing_time}}
+        <a href="{% url 'article_update' article.pk %}">@update@</a>
+        <a href="{% url 'article_delete' article.pk %}">!!delete!!</a>
+      </li>
+      {% endfor %}
+    </ul>
+
+    {% else %}
+      <p>There are no article.</p>
+    {% endif %}
+    {% else %}
+        <h2>You do not have permission to access</h2>
+    {% endif %}
+{% endblock %}
