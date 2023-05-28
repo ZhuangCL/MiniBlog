@@ -70,6 +70,7 @@ class MyArticleAllUserListView(LoginRequiredMixin,generic.ListView):
 
 # usercreate
 from django.shortcuts import render,redirect
+from django.contrib.auth.forms import UserCreationForm
 from .forms import RegisterForm
 def sign_up(request):
     form = RegisterForm()
@@ -88,7 +89,13 @@ def sign_up(request):
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
 from .models import Blogger,ArticleInstance
+from django import forms
 from django.contrib.auth.mixins import PermissionRequiredMixin
+
+class BloggerCreate(CreateView):
+    model = Blogger
+    fields = '__all__'
+    initial = {'date_of_birth':'1999/01/01'}
 
 class ArticleUpdate(PermissionRequiredMixin,UpdateView):
     permission_required = 'blog.can_edit_all_SET'
@@ -102,8 +109,11 @@ class ArticleDelete(DeleteView):
 # comment delete
 class ArticleInstanceDelete(DeleteView):
     model = ArticleInstance
+
     def get_success_url(self):
-        return reverse("article-detail", kwargs={'pk': self.object.id})
+        # print("test",self.object.article)
+        return reverse("article-detail", kwargs={'pk': self.object.article.id})
+    
 
 # create comment and article
 from django.shortcuts import get_object_or_404
@@ -115,10 +125,12 @@ class ArticleInstanceCreate(CreateView):
         context = super(ArticleInstanceCreate, self).get_context_data(**kwargs)
         context['article'] = get_object_or_404(Article, pk = self.kwargs['pk'])
         return context
+    
     def form_valid(self, form):
         form.instance.commenter = self.request.user
         form.instance.article=get_object_or_404(Article, pk = self.kwargs['pk'])
         return super(ArticleInstanceCreate, self).form_valid(form)
+    
     def get_success_url(self):
         pk = self.kwargs["pk"]
         return reverse("article-detail", kwargs={"pk": pk})
@@ -126,16 +138,33 @@ class ArticleInstanceCreate(CreateView):
 class ArticleCreate(CreateView):
     model = Article
     fields = ['title','genre','content']
-    # initial = {'genre':''}
 
     def get_context_data(self, **kwargs):
         context = super(ArticleCreate, self).get_context_data(**kwargs)
         context['blogger'] = get_object_or_404(Blogger, pk = self.kwargs['pk'])
         return context
+    
     def form_valid(self, form):
         form.instance.article = self.request.user
         form.instance.blogger=get_object_or_404(Blogger, pk = self.kwargs['pk'])
         return super(ArticleCreate, self).form_valid(form)
+    
     def get_success_url(self):
         return reverse("article-detail", kwargs={'pk': self.object.id})
+    
+
+# class BloggerCreate(CreateView):
+#     model = Blogger
+#     fields = ['sex','date_of_birth']
+
+#     def get_context_data(self, **kwargs):
+#         context = super(ArticleCreate, self).get_context_data(**kwargs)
+#         context['user'] = get_object_or_404(Blogger, pk = self.kwargs['pk'])
+#         return context
+#     def form_valid(self, form):
+#         form.instance.article = self.request.user
+#         form.instance.user=get_object_or_404(Blogger, pk = self.kwargs['pk'])
+#         return super(ArticleCreate, self).form_valid(form)
+#     def get_success_url(self):
+#         return reverse("article-detail", kwargs={'pk': self.object.id})
 
